@@ -34,6 +34,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+    publishing {
+        singleVariant("release")
+    }
 }
 
 dependencies {
@@ -64,10 +68,9 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-
                 groupId = "com.github.gubartz"
                 artifactId = "component"
-                version = "1.0.0"
+                version = "1.0.2"
             }
         }
     }
