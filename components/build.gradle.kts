@@ -70,7 +70,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.gubartz"
                 artifactId = "component"
-                version = "1.0.5"
+                version = "1.0.6"
             }
         }
     }
