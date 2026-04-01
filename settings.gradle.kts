@@ -21,4 +21,3 @@ dependencyResolutionManagement {
 
 rootProject.name = "components"
 include(":components")
-include(":myapplication")
