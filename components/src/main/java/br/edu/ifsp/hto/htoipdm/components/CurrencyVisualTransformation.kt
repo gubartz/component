@@ -9,11 +9,6 @@ import java.util.Locale
 
 class CurrencyVisualTransformation : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
-        // Se o campo estiver vazio, não formata nada para exibir a label/placeholder
-//        if (text.text.isEmpty()) {
-//            return TransformedText(text, OffsetMapping.Identity)
-//        }
-
         // Garante que só temos números
         val digitsOnly = text.text.filter { it.isDigit() }
         val value = digitsOnly.toLongOrNull() ?: 0L

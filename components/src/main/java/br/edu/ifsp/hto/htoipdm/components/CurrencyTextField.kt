@@ -5,12 +5,16 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import java.text.NumberFormat
+import java.util.Locale
+import kotlin.math.pow
 
 @Composable
 fun CurrencyTextField(
@@ -21,6 +25,10 @@ fun CurrencyTextField(
 ) {
 
     var text by remember { mutableStateOf(value.toString()) }
+
+    LaunchedEffect(value) {
+        text = value.toString()
+    }
 
     OutlinedTextField(
         value = text,
@@ -38,4 +46,9 @@ fun CurrencyTextField(
     )
 }
 
-fun Long.toDoubleCurrency(): Double = this / 100.0
+fun Long.toDoubleCurrency(digits: Int): Double = this / 10.0.pow(digits)
+
+fun Long.formatCurrency(digits: Int): String {
+    val formatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
+    return formatter.format(this.toDoubleCurrency(digits))
+}

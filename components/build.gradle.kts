@@ -29,6 +29,7 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
     }
 
     buildFeatures {
@@ -61,6 +62,7 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
 
 afterEvaluate {
@@ -70,7 +72,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "com.github.gubartz"
                 artifactId = "component"
-                version = "1.0.6"
+                version = "1.0.7"
             }
         }
     }
