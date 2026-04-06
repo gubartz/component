@@ -4,36 +4,50 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.util.Locale
 
-class CurrencyVisualTransformation : VisualTransformation {
+class CurrencyVisualTransformation(
+    private val locale: Locale = Locale.getDefault(),
+    private val scale: Int = 2
+) : VisualTransformation {
+
+    private val formatter = NumberFormat.getCurrencyInstance(locale)
+
     override fun filter(text: AnnotatedString): TransformedText {
-        // Garante que só temos números
-        val digitsOnly = text.text.filter { it.isDigit() }
-        val value = digitsOnly.toLongOrNull() ?: 0L
 
-        // Divide por 100 para considerar os dois últimos dígitos como centavos
-        val doubleValue = value / 100.0
+        val raw = text.text.ifEmpty { "0" }
 
-        // Pega a formatação de moeda com base no idioma/região do dispositivo
-        val formatter = NumberFormat.getCurrencyInstance(Locale.getDefault())
-        val formattedText = formatter.format(doubleValue)
+        val number = try {
+            BigDecimal(raw).movePointLeft(scale)
+        } catch (e: Exception) {
+            BigDecimal.ZERO
+        }
 
-        // Mapeamento de cursor simples (mantém o cursor sempre no final)
+        val formatted = formatter.format(number)
+
+        val digitIndexes = formatted.mapIndexedNotNull { i, c ->
+            if (c.isDigit()) i else null
+        }
+
         val offsetMapping = object : OffsetMapping {
+
             override fun originalToTransformed(offset: Int): Int {
-                return formattedText.length
+                if (offset <= 0) return 0
+                if (offset > digitIndexes.size) return formatted.length
+                return digitIndexes[offset - 1] + 1
             }
 
             override fun transformedToOriginal(offset: Int): Int {
-                return text.length
+                val digitsBefore = digitIndexes.count { it < offset }
+                return digitsBefore.coerceAtMost(raw.length)
             }
         }
 
         return TransformedText(
-            text = AnnotatedString(formattedText),
-            offsetMapping = offsetMapping
+            AnnotatedString(formatted),
+            offsetMapping
         )
     }
 }
