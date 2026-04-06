@@ -69,7 +69,7 @@ fun CurrencyTextField(
 
             onValueChange(normalized.toBigDecimalCurrency(scale))
         },
-        visualTransformation = AdvancedCurrencyVisualTransformation(locale, scale),
+        visualTransformation = CurrencyVisualTransformation(locale, scale),
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
